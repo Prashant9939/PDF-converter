@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .upload-box {
+      margin-bottom: 20px;
+    }
+
+    .upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 20px;
+      border: 2px dashed #4a90e2;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+
+    .upload-label i {
+      font-size: 48px;
+      color: #4a90e2;
+    }
+
+    .preview {
+      margin-top: 20px;
+    }
+
+    .preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .more-options {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .more-options button, #download-button {
+      background: #4a90e2;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    #download-button {
+      background: #28a745;
+      display: none;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Compressor</h1>
+    <p>Compress or crop your images easily.</p>
+    <div class="upload-box">
+      <input type="file" id="file-upload" accept="image/*" hidden>
+      <label for="file-upload" class="upload-label">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Upload your image here</p>
+      </label>
+    </div>
+    <div class="preview">
+      <img id="image-preview" src="" alt="Image Preview">
+    </div>
+    <div class="more-options" id="more-options">
+      <button id="crop-button">Crop Image</button>
+      <button id="compress-button">Compress Image</button>
+    </div>
+    <button id="download-button">Download Compressed Image</button>
+    <div id="status"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+  <script>
+    const fileUpload = document.getElementById('file-upload');
+    const imagePreview = document.getElementById('image-preview');
+    const moreOptions = document.getElementById('more-options');
+    const cropButton = document.getElementById('crop-button');
+    const compressButton = document.getElementById('compress-button');
+    const downloadButton = document.getElementById('download-button');
+    const status = document.getElementById('status');
+
+    let cropper;
+
+    fileUpload.addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+          moreOptions.style.display = 'block';
+          status.textContent = 'Image uploaded successfully.';
+
+          // Wait for the image to load before initializing cropper
+          imagePreview.onload = function () {
+            if (cropper) {
+              cropper.destroy();
+            }
+            cropper = new Cropper(imagePreview, {
+              aspectRatio: NaN,
+              viewMode: 1,
+              dragMode: 'move',
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      } else {
+        status.textContent = 'Please upload a valid image file.';
+      }
+    });
+
+    compressButton.addEventListener('click', function () {
+      const file = fileUpload.files[0];
+      if (!file) {
+        status.textContent = 'Please upload an image first.';
+        return;
+      }
+
+      status.textContent = 'Compressing image...';
+      compressImage(file);
+    });
+
+    function compressImage(file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          canvas.width = img.width / 2;
+          canvas.height = img.height / 2;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(function (blob) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = 'compressed-image.jpg';
+            downloadLink.click();
+            status.textContent = 'Compression complete.';
+          }, 'image/jpeg', 0.8);
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>

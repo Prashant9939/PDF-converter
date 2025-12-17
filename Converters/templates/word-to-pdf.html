@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ddd;
+            max-width: 400px;
+            margin: auto;
+        }
+        .upload-box {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            cursor: pointer;
+        }
+        .upload-label {
+            display: block;
+            cursor: pointer;
+        }
+        .upload-label i {
+            font-size: 40px;
+            color: #007bff;
+        }
+        .upload-label p {
+            color: #007bff;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #status {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+  <h2>Upload Word file to convert into PDF</h2>
+  <form id="convert-form">
+      <input type="file" id="file-upload" name="file" accept=".docx" required>
+      <button type="submit" id="convert-button">Convert</button>
+  </form>
+  <div id="status"></div>
+
+  <script>
+    // Form submission handler
+    document.getElementById("convert-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let fileInput = document.getElementById("file-upload");
+        let submitButton = document.getElementById("convert-button");
+        let statusMessage = document.getElementById("status");
+
+        if (!fileInput.files.length) {
+            statusMessage.innerHTML = "<p style='color:red;'>Please upload a Word (.docx) file.</p>";
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        // Disable button to prevent multiple clicks
+        submitButton.disabled = true;
+        statusMessage.innerHTML = "<p style='color:blue;'>Converting... Please wait.</p>";
+
+        fetch("/convert/word-to-pdf", {  // <-- Fixed endpoint
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Conversion failed.");
+            }
+            return response.blob(); // Convert response to a file
+        })
+        .then(blob => {
+            // Create a download link for the converted file
+            let downloadUrl = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "converted.pdf"; // <-- Fixed file extension
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Clear the file input
+            fileInput.value = "";
+
+            // Refresh the page after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000); // Adjust the delay as needed
+        })
+        .catch(error => {
+            statusMessage.innerHTML = `<p style='color:red;'>Error: ${error.message}</p>`;
+        })
+        .finally(() => {
+            submitButton.disabled = false; // Re-enable button
+        });
+    });
+  </script>
+</body>
+</html>
