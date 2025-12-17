@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Converter Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">FileConverterPro</div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#login" class="btn-login">Login</a></li>
+      </ul>
+    </nav>
+    <div class="tagline">
+      <h1>Convert Your Files Easily</h1>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <!-- <section class="hero">
+    <div class="upload-box" onclick="document.getElementById('file-upload').click();">
+      <input type="file" id="file-upload" hidden>
+      <label for="file-upload" class="upload-label">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Upload or drag & drop your file here</p>
+      </label>
+      <button class="cta-button" onclick="alert('Starting the conversion process!');">Start Converting Now</button>
+    </div>
+  </section> -->
+  
+
+  <!-- Conversion Options Section -->
+  <section class="conversion-options">
+    <div class="option" onclick="window.location.href='Converters\\pdf-to-word.html';">
+      <i class="fas fa-file-pdf"></i>
+      <span>PDF to Word</span>
+    </div>
+    <div class="option" onclick="window.location.href='/word-to-pdf';">
+      <i class="fas fa-file-word"></i>
+      <span>Word to PDF</span>
+    </div>
+    <div class="option" onclick="window.location.href='/pdf-to-excel';">
+      <i class="fas fa-file-excel"></i>
+      <span>PDF to Excel</span>
+    </div>
+    <div class="option" onclick="window.location.href='/png-to-jpg';">
+      <i class="fas fa-file-image"></i>
+      <span>PNG to JPG</span>
+    </div>
+    <div class="option" onclick="window.location.href='/pdf-compressor';">
+      <i class="fas fa-file-archive"></i>
+      <span>PDF Compressor</span>
+    </div>
+    <div class="option" onclick="window.location.href='Converters\\img-compressor.html';">
+      <i class="fas fa-file-image"></i>
+      <span>JPEG Compressor</span>
+    </div>
+  </section>
+  
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Service</a>
+      <a href="#faq">FAQs</a>
+    </div>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+    </div>
+    <p>© 2023 FileConverterPro. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
